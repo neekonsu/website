@@ -1,29 +1,45 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
-
-	"github.com/neekonsu/website/handlers"
+	"os"
+	"path/filepath"
 )
 
-// TODO: Implement main function logic
 func main() {
-	var port string = ":8080"
+	// Define command line flags
+	port := flag.String("port", "8080", "port to serve on")
+	dir := flag.String("dir", ".", "directory of static files")
+	flag.Parse()
 
-	// Serve static files
-	fs := http.FileServer(http.Dir("static"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	// Create file server handler
+	fs := http.FileServer(http.Dir(*dir))
 
-	// Set up routes
-	http.HandleFunc("/", handlers.HomePage)
-	http.HandleFunc("/blog", handlers.BlogPage)
-	http.HandleFunc("/about", handlers.AboutPage)
-	http.HandleFunc("/contact", handlers.ContactPage)
+	// Create custom handler for SPA routing
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// Get the absolute path to the requested file
+		path := filepath.Join(*dir, r.URL.Path)
 
-	fmt.Println("Server starting on http://localhost" + port)
-	if err := http.ListenAndServe(port, nil); err != nil {
-		log.Fatal("Error starting server: ", err)
-	}
-}
+		// Check if file exists
+		_, err := os.Stat(path)
+		if os.IsNotExist(err) {
+			// File doesn't exist, serve index.html
+			http.ServeFile(w, r, filepath.Join(*dir, "index.html"))
+			return
+		} else if err != nil {
+			// Other error occurred
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// File exists, serve it
+		fs.ServeHTTP(w, r)
+	})
+
+	// Start server
+	fmt.Printf("Serving files from %s on http://localhost:%s\n", *dir, *port)
+	log.Fatal(http.ListenAndServe(":"+*port, nil))
+} 
