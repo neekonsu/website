@@ -1,45 +1,41 @@
 package main
 
 import (
-	"flag"
-	"fmt"
-	"log"
 	"net/http"
+	"log"
 	"os"
-	"path/filepath"
 )
 
+func indexhandler(w http.ResponseWriter, r *http.Request) {
+	// Enforce GET only for this handler
+	if r.Method != http.MethodGet {
+		http.Error(w, "Homepage only allows GET requests", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Read index.html and throw error if unable
+	content, err := os.ReadFile("./static/index.html")
+	if err != nil {
+		log.Printf("Error reading index.html: %v", err)
+		http.Error(w, "Internal server error while reading index.html", http.StatusInternalServerError)
+		return
+	}
+
+	// Configure header flags and write header
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(http.StatusOK)
+
+	// Write the response body and catch errors
+	_, err = w.Write(content)
+	if err != nil {
+		log.Printf("Error writing content to http response: %v", err)
+	}
+}
+
 func main() {
-	// Define command line flags
-	port := flag.String("port", "8080", "port to serve on")
-	dir := flag.String("dir", ".", "directory of static files")
-	flag.Parse()
-
-	// Create file server handler
-	fs := http.FileServer(http.Dir(*dir))
-
-	// Create custom handler for SPA routing
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// Get the absolute path to the requested file
-		path := filepath.Join(*dir, r.URL.Path)
-
-		// Check if file exists
-		_, err := os.Stat(path)
-		if os.IsNotExist(err) {
-			// File doesn't exist, serve index.html
-			http.ServeFile(w, r, filepath.Join(*dir, "index.html"))
-			return
-		} else if err != nil {
-			// Other error occurred
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		// File exists, serve it
-		fs.ServeHTTP(w, r)
-	})
-
-	// Start server
-	fmt.Printf("Serving files from %s on http://localhost:%s\n", *dir, *port)
-	log.Fatal(http.ListenAndServe(":"+*port, nil))
-} 
+	http.HandleFunc("/", indexhandler)
+	err := http.ListenAndServe(":8090", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
