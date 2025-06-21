@@ -1,1 +1,52 @@
-/* Start css */
+html {
+    font-size: clamp(14px, 1.2vw, 16px);
+}
+
+body {
+    background-color: #fdfcf7;
+}
+
+#container {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    max-width: 700px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+#sidebar {
+    width: 250px;
+    margin-right: 2rem;
+    padding: 1rem;
+}
+
+#coverphoto {
+    display: block;
+    margin: 0 auto;
+    max-width: 200px;
+}
+
+#content {
+    padding: 2rem;
+}
+
+.content {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+    #container {
+        flex-direction: column;
+    }
+
+    #sidebar {
+        width: 100%;
+        margin-right: 0;
+        padding: 1rem 0;
+    }
+
+    #content {
+        padding: 1rem;
+    }
+}

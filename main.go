@@ -14,7 +14,7 @@ func indexhandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Read index.html and throw error if unable
-	content, err := os.ReadFile("./static/index.html")
+	content, err := os.ReadFile("./index.html")
 	if err != nil {
 		log.Printf("Error reading index.html: %v", err)
 		http.Error(w, "Internal server error while reading index.html", http.StatusInternalServerError)
@@ -34,6 +34,8 @@ func indexhandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", indexhandler)
+	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./css"))))
+	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("./img"))))
 	err := http.ListenAndServe(":8090", nil)
 	if err != nil {
 		log.Fatal(err)
