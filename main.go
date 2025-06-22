@@ -1,12 +1,13 @@
 package main
 
 import (
-	"net/http"
 	"log"
+	"net/http"
 	"os"
+	"strings"
 )
 
-func indexhandler(w http.ResponseWriter, r *http.Request) {
+func indexHandler(w http.ResponseWriter, r *http.Request) {
 	// Enforce GET only for this handler
 	if r.Method != http.MethodGet {
 		http.Error(w, "Homepage only allows GET requests", http.StatusMethodNotAllowed)
@@ -32,11 +33,64 @@ func indexhandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func cssHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "CSS requests can only be GET type", http.StatusMethodNotAllowed)
+		return
+	}
+
+	content, err := os.ReadFile("./css/styles.css")
+	if err != nil {
+		log.Printf("Error reading styles.css: %v", err)
+		http.Error(w, "Internal server error while reading styles.css", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/css")
+	w.WriteHeader(http.StatusOK)
+
+	_, err = w.Write(content)
+	if err != nil {
+		log.Printf("Error writing content to http response: %v", err)
+	}
+}
+
+func imgHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "IMG requests can only be GET type", http.StatusMethodNotAllowed)
+		return
+	}
+
+	path := r.URL.Path
+	filepath := "." + path
+	content, err := os.ReadFile(filepath)
+	if err != nil {
+		http.Error(w, "Error while reading requested image", http.StatusInternalServerError)
+		http.NotFound(w, r)
+		log.Printf("Error while reading requested image: %v", err)
+		return
+	}
+
+	if strings.HasSuffix(filepath, ".jpg") {
+		w.Header().Set("Content-Type", "image/jpg")
+	} else if strings.HasSuffix(filepath, ".png") {
+		w.Header().Set("Content-Type", "image/png")
+	}
+
+	w.WriteHeader(http.StatusOK)
+	_, err = w.Write(content)
+	if err != nil {
+		log.Printf("Error while writing image response: %v", err)
+	}
+}
+
 func main() {
-	http.HandleFunc("/", indexhandler)
-	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./css"))))
-	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("./img"))))
+	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/css/", cssHandler)
+	http.HandleFunc("/img/", imgHandler)
+
 	err := http.ListenAndServe(":8090", nil)
+
 	if err != nil {
 		log.Fatal(err)
 	}
