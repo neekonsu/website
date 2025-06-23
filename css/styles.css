@@ -56,7 +56,7 @@ a:hover {
 }
 
 #sidebar {
-    min-width: 100px;
+    min-width: 120px;
 }
 
 #coverphoto {
@@ -79,15 +79,11 @@ a:hover {
     gap: 1rem;
 }
 
-#biglinks {
-
-}
-
 .container {
     width: 100%;
     display: flex;
     flex-direction: row;
-    gap: 2rem;
+    gap: 1.7rem;
 }
 
 .paragraph {
