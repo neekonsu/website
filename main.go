@@ -62,6 +62,7 @@ func cssHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// TODO implement lazy loading
 func imgHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "IMG requests can only be GET type", http.StatusMethodNotAllowed)
