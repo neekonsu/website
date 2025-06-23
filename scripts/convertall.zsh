@@ -1,3 +1,3 @@
-for file in ./img/*.ARW; do
+for file in ./*.ARW; do
   magick "$file" "${file%.ARW}.jpg"
 done

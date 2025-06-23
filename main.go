@@ -62,7 +62,6 @@ func cssHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// TODO implement lazy loading
 func imgHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "IMG requests can only be GET type", http.StatusMethodNotAllowed)
@@ -70,8 +69,9 @@ func imgHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	path := "." + r.URL.Path
-	if r.URL.Path == "/img/" {
-		filenames, err := os.ReadDir("./img")
+	stat, err := os.Stat(path)
+	if  err == nil && stat.IsDir() {
+		filenames, err := os.ReadDir(path)
 		if err != nil {
 			http.Error(w, "Error accessing image directory", http.StatusInternalServerError)
 			log.Printf("Error accessing image directory: %v", err)
@@ -83,7 +83,9 @@ func imgHandler(w http.ResponseWriter, r *http.Request) {
 				photoname := file.Name()
 				if strings.HasSuffix(photoname, ".jpg") || 
 					strings.HasSuffix(photoname, ".JPG") || 
-					strings.HasSuffix(photoname, ".png") &&
+					strings.HasSuffix(photoname, ".png") || 
+					strings.HasSuffix(photoname, ".webp") || 
+					strings.HasSuffix(photoname, ".WEBP") &&
 					!strings.Contains(photoname, "favicon") {
 					photonames = append(photonames, photoname)
 				}
@@ -98,6 +100,9 @@ func imgHandler(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Error marshalling json")
 		}
 		
+	} else if err != nil {
+		http.Error(w, "Error while accessing requested file/directory.", http.StatusInternalServerError)
+		log.Printf("Error while accessing requested file/directory '%v': %v", path, err)
 	} else {
 		content, err := os.ReadFile(path)
 		if err != nil {
@@ -107,10 +112,15 @@ func imgHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	
-		if strings.HasSuffix(path, ".jpg") {
+		if strings.HasSuffix(path, ".JPG") || strings.HasSuffix(path, ".jpg") {
 			w.Header().Set("Content-Type", "image/jpg")
-		} else if strings.HasSuffix(path, ".png") {
+		} else if strings.HasSuffix(path, ".png") || strings.HasSuffix(path, ".PNG") {
 			w.Header().Set("Content-Type", "image/png")
+		} else if strings.HasSuffix(path, ".WEBP") || strings.HasSuffix(path, ".webp") {
+			w.Header().Set("Content-Type", "image/webp")
+		} else {
+			http.Error(w, "Error serving serving media type: " + path, http.StatusUnsupportedMediaType)
+			log.Printf("Error serving media type: %v", path)
 		}
 	
 		w.WriteHeader(http.StatusOK)

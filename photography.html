@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <title>Neekon Saadat</title>
         <link rel="icon" type="image/png" href="/img/favicon.png">
-        <link rel="stylesheet" href="./css/styles.css">
+        <link rel="stylesheet" href="/css/styles.css">
         <link rel="stylesheet" href="https://use.typekit.net/hjw0wtw.css">
         <!-- <base href="http://www.neekon.xyz"> -->
     </head>
@@ -33,53 +33,48 @@
                             <a href="/music">Music</a>
                         </li>
                         <li>
-                            <a href="code">Code</a>
+                            <a href="https://www.github.com/neekonsu" target="_blank" rel="noopener noreferrer">Code</a>
                         </li>
                         <li>
                             <a href="/bsi">BSI</a>
                         </li>
                     </ul>
                 </aside>
-                <main id="gallery">
-                    <!-- Populated by script -->
+                <main id="content">
+                    <ul id="biglinks">
+                        <li>
+                            <a href="/photography/suisse2024">Switzerland 2024</a>
+                        </li>
+                        <li>
+                            <a href="/photography/netherlands2024">Netherlands 2024</a>
+                        </li>
+                        <li>
+                            <a href="/photography/france2024">France 2024</a>
+                        </li>
+                        <li>
+                            <a href="/photography/germany2024">Germany 2024</a>
+                        </li>
+                        <li>
+                            <a href="/photography/georgia2023">Georgia 2023</a>
+                        </li>
+                        <li>
+                            <a href="/photography/italy2023">Italy 2023</a>
+                        </li>
+                        <li>
+                            <a href="/photography/france2023">France 2023</a>
+                        </li>
+                        <li>
+                            <a href="/photography/iran2022">Iran 2022</a>
+                        </li>
+                        <li>
+                            <a href="/photography/mexico2021">Mexico 2021</a>
+                        </li>
+                    </ul>
                 </main>
             </div>
             <div class="container">
                 <p id="copyright">© 2015 - 2025</p>
             </div>
         </div>
-        <script>
-            function loadPhotos() {
-                fetch('/img/')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(photos => {
-                        const gallery = document.getElementById("gallery");
-                        gallery.innerHTML = ''; // Clear existing photos
-                        photos.forEach(name => {
-                            const img = document.createElement("img");
-                            img.src = `/img/${name}`;
-                            img.className = "photo";
-
-                            const a = document.createElement("a");
-                            a.href = img.src;
-                            a.target = "_blank"
-                            a.appendChild(img)
-                            gallery.appendChild(a);
-                        });
-                    })
-                    .catch(error => {
-                        console.error('There was a problem fetching the photos:', error);
-                    });
-            }
-
-            document.addEventListener("DOMContentLoaded", () => {
-                loadPhotos();
-            });
-        </script>
     </body>
 </html>
