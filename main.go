@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -67,28 +68,59 @@ func imgHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	path := r.URL.Path
-	filepath := "." + path
-	content, err := os.ReadFile(filepath)
-	if err != nil {
-		http.Error(w, "Error while reading requested image", http.StatusInternalServerError)
-		http.NotFound(w, r)
-		log.Printf("Error while reading requested image: %v", err)
-		return
+	path := "." + r.URL.Path
+	if r.URL.Path == "/img/" {
+		filenames, err := os.ReadDir("./img")
+		if err != nil {
+			http.Error(w, "Error accessing image directory", http.StatusInternalServerError)
+			log.Printf("Error accessing image directory: %v", err)
+			return
+		}
+		var photonames []string
+		for _, file := range filenames {
+			if !file.IsDir() {
+				photoname := file.Name()
+				if strings.HasSuffix(photoname, ".jpg") || 
+					strings.HasSuffix(photoname, ".JPG") || 
+					strings.HasSuffix(photoname, ".png") &&
+					!strings.Contains(photoname, "favicon") {
+					photonames = append(photonames, photoname)
+				}
+			}
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
+		err = json.NewEncoder(w).Encode(photonames)
+		if err != nil {
+			log.Printf("Error marshalling json")
+		}
+		
+	} else {
+		content, err := os.ReadFile(path)
+		if err != nil {
+			http.Error(w, "Error while reading requested image", http.StatusInternalServerError)
+			http.NotFound(w, r)
+			log.Printf("Error while reading requested image: %v", err)
+			return
+		}
+	
+		if strings.HasSuffix(path, ".jpg") {
+			w.Header().Set("Content-Type", "image/jpg")
+		} else if strings.HasSuffix(path, ".png") {
+			w.Header().Set("Content-Type", "image/png")
+		}
+	
+		w.WriteHeader(http.StatusOK)
+		_, err = w.Write(content)
+		if err != nil {
+			log.Printf("Error while writing image response: %v", err)
+		}
 	}
 
-	if strings.HasSuffix(filepath, ".jpg") {
-		w.Header().Set("Content-Type", "image/jpg")
-	} else if strings.HasSuffix(filepath, ".png") {
-		w.Header().Set("Content-Type", "image/png")
-	}
-
-	w.WriteHeader(http.StatusOK)
-	_, err = w.Write(content)
-	if err != nil {
-		log.Printf("Error while writing image response: %v", err)
-	}
 }
+
 
 func main() {
 	http.HandleFunc("/", pageHandler)
