@@ -7,18 +7,24 @@ import (
 	"strings"
 )
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
+func pageHandler(w http.ResponseWriter, r *http.Request) {
 	// Enforce GET only for this handler
 	if r.Method != http.MethodGet {
-		http.Error(w, "Homepage only allows GET requests", http.StatusMethodNotAllowed)
+		http.Error(w, "Address only allows GET requests", http.StatusMethodNotAllowed)
 		return
 	}
 
+	path := "." + r.URL.Path + ".html"
+
+	if r.URL.Path == "/" {
+		path = "./index.html"
+	}
+
 	// Read index.html and throw error if unable
-	content, err := os.ReadFile("./index.html")
+	content, err := os.ReadFile(path)
 	if err != nil {
 		log.Printf("Error reading index.html: %v", err)
-		http.Error(w, "Internal server error while reading index.html", http.StatusInternalServerError)
+		http.Error(w, "Internal server error while reading "+path, http.StatusInternalServerError)
 		return
 	}
 
@@ -85,7 +91,7 @@ func imgHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/", pageHandler)
 	http.HandleFunc("/css/", cssHandler)
 	http.HandleFunc("/img/", imgHandler)
 

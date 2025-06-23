@@ -78,6 +78,16 @@ a:hover {
     font-size: 0.5rem;
 }
 
+.linknostyle {
+    text-decoration: none;
+    color: inherit;
+}
+
+.linknostyle:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
 @media (max-width: 600px) {
     #container {
         flex-direction: column;
