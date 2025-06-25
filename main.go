@@ -134,11 +134,18 @@ func imgHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func main() {
+	port := "8090";
+	if len(os.Args) == 2 {
+		port = os.Args[1]
+	} else if len(os.Args) > 2 {
+		log.Printf("Improper arguments, expected single argument - port number. Defaulting to :8090")
+	} 
+
 	http.HandleFunc("/", pageHandler)
 	http.HandleFunc("/css/", cssHandler)
 	http.HandleFunc("/img/", imgHandler)
 
-	err := http.ListenAndServe(":8090", nil)
+	err := http.ListenAndServe(":" + port, nil)
 
 	if err != nil {
 		log.Fatal(err)
