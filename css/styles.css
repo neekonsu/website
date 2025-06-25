@@ -56,7 +56,9 @@ a:hover {
 }
 
 #sidebar {
+    width: fit-content;
     min-width: 120px;
+    flex-shrink: 0;
 }
 
 #coverphoto {
