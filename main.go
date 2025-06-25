@@ -138,7 +138,7 @@ func main() {
 	http.HandleFunc("/css/", cssHandler)
 	http.HandleFunc("/img/", imgHandler)
 
-	err := http.ListenAndServe(":8090", nil)
+	err := http.ListenAndServe(":80", nil)
 
 	if err != nil {
 		log.Fatal(err)
