@@ -11,7 +11,11 @@
     </head>
     <body style="display: none;" onload="document.body.style.display = 'block';">
         <div id="center">
-            <h1><a class="linknostyle" href="/">Neekon Saadat</a></h1>
+            <div id="heading-wrapper">
+                <div id="mobile-title-and-links">
+                    <h1><a class="linknostyle" href="/">Neekon Saadat</a></h1>
+                </div>
+            </div>
             <div class="container">
                 <aside id="sidebar">
                     <!-- Test content hardcoded, will load via js later -->
@@ -60,5 +64,39 @@
                 <p id="copyright">© 2015 - 2025</p>
             </div>
         </div>
+        <script>
+            function moveCoverPhotoIfMobile() {
+                const cover = document.getElementById("coverphoto");
+                const links = document.querySelector("ul");
+                if (window.innerWidth <= 600 && cover && links && !document.getElementById("mobile-cover")) {
+                    const clonecover = cover.cloneNode(true);
+                    const clonelinks = links.cloneNode(true);
+                    clonecover.id = "mobile-cover";
+                    clonelinks.id = "mobile-links";
+                    const titleAndLinks = document.getElementById("mobile-title-and-links");
+                    titleAndLinks.appendChild(clonelinks);
+                    const headingWrapper = document.getElementById("heading-wrapper");
+                    headingWrapper.appendChild(clonecover);
+                    cover.style.display = 'none';
+                    links.style.display = 'none';
+                } else if (window.innerWidth > 600) {
+                    const mobileCover = document.getElementById("mobile-cover");
+                    const mobileLinks = document.getElementById("mobile-links");
+                    if (mobileCover) {
+                        mobileCover.remove();
+                        const originalCover = document.getElementById("coverphoto");
+                        if (originalCover) originalCover.style.display = '';
+                    }
+                    if (mobileLinks) {
+                        mobileLinks.remove();
+                        const originalLinks = document.querySelector("ul");
+                        if (originalLinks) originalLinks.style.display = '';
+                    }
+                }
+            }
+
+            window.addEventListener("resize", moveCoverPhotoIfMobile);
+            window.addEventListener("load", moveCoverPhotoIfMobile);
+        </script>
     </body>
 </html>

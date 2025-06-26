@@ -115,7 +115,7 @@ a:hover {
     height: 160px;
 }
 
-@media (max-width: 600pt) {
+@media (max-width: 600px) {
     .container {
         width: 100%;
         display: flex;
@@ -128,7 +128,7 @@ a:hover {
         flex-direction: row;
         flex-shrink: 0;
         flex-wrap: wrap;
-        justify-content: space-between;
+        justify-content: left;
         gap: .7rem;
         padding: 0;
         margin-top: .8rem;
@@ -161,10 +161,6 @@ a:hover {
         height: auto;
     }
 
-    h1 {
-        font-size: 24px;
-    }
-
     #center {
         width: 90%;
         margin: 0 auto;
@@ -193,5 +189,26 @@ a:hover {
         text-align: justify;
         margin-top: 0;
         margin-bottom: 1rem;
+    }
+
+    #heading-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    #mobile-cover {
+        width: auto;
+        height: 100px;
+        margin: 0;
+    }
+
+    h1 {
+        font-size: 24px;
+        font-family: "utopia-std-display", serif;
+        font-weight: 400;
+        font-style: normal;
+        margin: 0;
     }
 }
