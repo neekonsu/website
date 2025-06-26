@@ -167,4 +167,15 @@ a:hover {
         width: 80%;
         margin: 0 auto;
     }
+
+    #gallery {
+        width: fit-content;
+        margin: 0 auto;
+        padding-top: 0.2rem;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
 }
