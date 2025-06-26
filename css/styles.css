@@ -181,6 +181,6 @@ a:hover {
 
     .photo {
         display: block;
-        height: 200px;
+        width: 80%;
     }
 }
