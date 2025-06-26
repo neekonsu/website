@@ -7216,3 +7216,75 @@ Priority: u=5, i
 -- Cookies --
 
 
+=== Incoming Request Info === [2025-06-26T13:25:40-07:00]
+Method: GET
+URL: /
+Proto: HTTP/1.1
+Host: localhost
+RemoteAddr: [::1]:49536
+
+-- Headers --
+Sec-Fetch-Dest: document
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Mode: navigate
+Accept-Language: en-US,en;q=0.9
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Sec-Fetch-Site: none
+Priority: u=0, i
+Connection: keep-alive
+
+-- Query Parameters --
+
+-- Cookies --
+
+
+=== Incoming Request Info === [2025-06-26T13:25:40-07:00]
+Method: GET
+URL: /css/styles.css
+Proto: HTTP/1.1
+Host: localhost
+RemoteAddr: [::1]:49536
+
+-- Headers --
+Sec-Fetch-Dest: style
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15
+Accept: text/css,*/*;q=0.1
+Accept-Language: en-US,en;q=0.9
+Priority: u=1, i
+Referer: http://localhost/
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+
+-- Query Parameters --
+
+-- Cookies --
+
+
+=== Incoming Request Info === [2025-06-26T13:25:40-07:00]
+Method: GET
+URL: /img/cover.jpg
+Proto: HTTP/1.1
+Host: localhost
+RemoteAddr: [::1]:49537
+
+-- Headers --
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15
+Sec-Fetch-Site: same-origin
+Priority: u=5, i
+Accept-Encoding: gzip, deflate
+Sec-Fetch-Dest: image
+Accept: image/webp,image/avif,image/jxl,image/heic,image/heic-sequence,video/*;q=0.8,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5
+Referer: http://localhost/
+Sec-Fetch-Mode: no-cors
+Accept-Language: en-US,en;q=0.9
+Connection: keep-alive
+
+-- Query Parameters --
+
+-- Cookies --
+
+
