@@ -192,6 +192,7 @@ a:hover {
     }
 
     #heading-wrapper {
+        height: 150px;
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
@@ -200,7 +201,7 @@ a:hover {
 
     #mobile-cover {
         width: auto;
-        height: 100px;
+        height: 150px;
         margin: 0;
     }
 
