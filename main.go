@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 )
 
 func pageHandler(w http.ResponseWriter, r *http.Request) {
@@ -161,6 +162,84 @@ func imgHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
+func logMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		logRequestToFile(r)
+		next.ServeHTTP(w, r)
+	})
+}
+
+
+// formatRequestDetails returns a formatted string of the http.Request details.
+func formatRequestDetails(r *http.Request) string {
+	var sb strings.Builder
+	
+	sb.WriteString("=== Incoming Request Info === [" + time.Now().Format(time.RFC3339) + "]\n")
+	sb.WriteString("Method: " + r.Method + "\n")
+	sb.WriteString("URL: " + r.URL.String() + "\n")
+	sb.WriteString("Proto: " + r.Proto + "\n")
+	sb.WriteString("Host: " + r.Host + "\n")
+	sb.WriteString("RemoteAddr: " + r.RemoteAddr + "\n")
+	
+	sb.WriteString("\n-- Headers --\n")
+	for name, values := range r.Header {
+		for _, value := range values {
+			sb.WriteString(name + ": " + value + "\n")
+		}
+	}
+	
+	sb.WriteString("\n-- Query Parameters --\n")
+	query := r.URL.Query()
+	for name, values := range query {
+		for _, value := range values {
+			sb.WriteString(name + ": " + value + "\n")
+		}
+	}
+	
+	sb.WriteString("\n-- Cookies --\n")
+	for _, cookie := range r.Cookies() {
+		sb.WriteString(cookie.Name + ": " + cookie.Value + "\n")
+	}
+	
+	if r.TLS != nil {
+		sb.WriteString("\n-- TLS Info --\n")
+		sb.WriteString("TLS Version: " + tlsVersion(r.TLS.Version) + "\n")
+		sb.WriteString("Cipher Suite: " + tls.CipherSuiteName(r.TLS.CipherSuite) + "\n")
+	}
+	
+	return sb.String()
+}
+
+func tlsVersion(version uint16) string {
+	switch version {
+	case tls.VersionTLS10:
+		return "TLS1.0"
+	case tls.VersionTLS11:
+		return "TLS1.1"
+	case tls.VersionTLS12:
+		return "TLS1.2"
+	case tls.VersionTLS13:
+		return "TLS1.3"
+	default:
+		return "Unknown"
+	}
+}
+
+func logRequestToFile(r *http.Request) {
+	entry := formatRequestDetails(r)
+	
+	f, err := os.OpenFile("./journal.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Printf("Failed to open journal.txt for writing: %v", err)
+		return
+	}
+	defer f.Close()
+	
+	if _, err := f.WriteString(entry + "\n\n"); err != nil {
+		log.Printf("Failed to write request to journal.txt: %v", err)
+	}
+}
+
 func main() {
 	port := "8090"
 	protocol := "http"
@@ -174,9 +253,11 @@ func main() {
 		log.Printf("Improper arguments. Usage: ./program [port] [http|https]")
 	}
 
-	http.HandleFunc("/", pageHandler)
-	http.HandleFunc("/css/", cssHandler)
-	http.HandleFunc("/img/", imgHandler)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", pageHandler)
+	mux.HandleFunc("/css/", cssHandler)
+	mux.HandleFunc("/img/", imgHandler)
+	wrappedMux := logMiddleware(mux)
 
 	if protocol == "https" {
 		// Load SSL certificates
@@ -191,7 +272,7 @@ func main() {
 		tlsConfig := &tls.Config{Certificates: []tls.Certificate{cert}}
 		server := &http.Server{
 			Addr:      ":" + port,
-			Handler:   nil,
+			Handler:   wrappedMux,
 			TLSConfig: tlsConfig,
 		}
 
@@ -202,7 +283,7 @@ func main() {
 		}
 	} else {
 		log.Printf("Starting HTTP server on port %s", port)
-		err := http.ListenAndServe(":"+port, nil)
+		err := http.ListenAndServe(":"+port, wrappedMux)
 		if err != nil {
 			log.Fatal(err)
 		}
