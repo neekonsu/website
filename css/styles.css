@@ -128,9 +128,10 @@ a:hover {
         flex-direction: row;
         flex-shrink: 0;
         flex-wrap: wrap;
-        gap: 1rem;
+        justify-content: center;
+        gap: .7rem;
         padding: 0;
-        margin-top: 1rem;
+        margin-top: .8rem;
         line-height: 1.6rem;
         list-style: none;
         text-align: left;
