@@ -184,4 +184,11 @@ a:hover {
         height: auto;
         width: 300px;
     }
+
+    .paragraph {
+        font-size: 1rem;
+        line-height: 1.6;
+        text-align: justify;
+        margin: 0;
+    }
 }
