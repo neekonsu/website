@@ -115,7 +115,7 @@ a:hover {
     height: 160px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 600pt) {
     .container {
         width: 100%;
         display: flex;
