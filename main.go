@@ -21,6 +21,8 @@ func pageHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.URL.Path == "/" {
 		path = "./index.html"
+	} else if r.URL.Path == "robots.txt" {
+		path = "./robots.txt"
 	}
 
 	dirPath := path
