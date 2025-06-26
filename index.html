@@ -22,7 +22,7 @@
                     <img id="coverphoto" src="/img/cover.jpg" alt="Cover photo"/>
                     <ul>
                         <li>
-                            <a href="/cv">Curriculum Vitae</a>
+                            <a id="cv" href="/cv">Curriculum Vitae</a>
                         </li>
                         <li>
                             <a href="/photography">Photography</a>
@@ -79,9 +79,13 @@
                     headingWrapper.appendChild(clonecover);
                     cover.style.display = 'none';
                     links.style.display = 'none';
+                    const cv = document.getElementById("cv");
+                    cv.textContent = "CV";
                 } else if (window.innerWidth > 600) {
                     const mobileCover = document.getElementById("mobile-cover");
                     const mobileLinks = document.getElementById("mobile-links");
+                    const cv = document.getElementById("cv");
+                    cv.textContent = "Curriculum Vitae";
                     if (mobileCover) {
                         mobileCover.remove();
                         const originalCover = document.getElementById("coverphoto");
@@ -94,9 +98,21 @@
                     }
                 }
             }
-
+            
             window.addEventListener("resize", moveCoverPhotoIfMobile);
             window.addEventListener("load", moveCoverPhotoIfMobile);
+
+            function syncCoverHeight() {
+                const mobileCover = document.getElementById("mobile-cover");
+                const titleLinks = document.getElementById("mobile-title-and-links");
+                if (mobileCover && titleLinks) {
+                    mobileCover.style.height = `${titleLinks.offsetHeight}px`;
+                }
+            }
+
+            window.addEventListener("resize", syncCoverHeight);
+            window.addEventListener("load", syncCoverHeight);
+            
         </script>
     </body>
 </html>
