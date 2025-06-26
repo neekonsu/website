@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -21,10 +22,37 @@ func pageHandler(w http.ResponseWriter, r *http.Request) {
 		path = "./index.html"
 	}
 
-	// Read index.html and throw error if unable
+	dirPath := path
+	if !strings.HasSuffix(dirPath, "/") {
+		dirPath = dirPath[:strings.LastIndex(dirPath, "/")+1]
+	}
+
+	pages, err := os.ReadDir(dirPath)
+	if err != nil {
+		log.Printf("Directory not found: %v", err)
+		http.Error(w, "Directory not found", http.StatusNotFound)
+		return
+	}
+
+	fileName := path[strings.LastIndex(path, "/")+1:]
+	found := false
+	for _, page := range pages {
+		if page.Name() == fileName {
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		log.Printf("Requested file not found in directory: %v", path)
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
+
+	// Read page and throw error if unable
 	content, err := os.ReadFile(path)
 	if err != nil {
-		log.Printf("Error reading index.html: %v", err)
+		log.Printf("Error reading %v: %v", fileName, err)
 		http.Error(w, "Internal server error while reading "+path, http.StatusInternalServerError)
 		return
 	}
@@ -134,20 +162,49 @@ func imgHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func main() {
-	port := "8090";
-	if len(os.Args) == 2 {
+	port := "8090"
+	protocol := "http"
+
+	if len(os.Args) >= 2 {
 		port = os.Args[1]
-	} else if len(os.Args) > 2 {
-		log.Printf("Improper arguments, expected single argument - port number. Defaulting to :8090")
-	} 
+	}
+	if len(os.Args) == 3 {
+		protocol = os.Args[2]
+	} else if len(os.Args) > 3 {
+		log.Printf("Improper arguments. Usage: ./program [port] [http|https]")
+	}
 
 	http.HandleFunc("/", pageHandler)
 	http.HandleFunc("/css/", cssHandler)
 	http.HandleFunc("/img/", imgHandler)
 
-	err := http.ListenAndServe(":" + port, nil)
+	if protocol == "https" {
+		// Load SSL certificates
+		certPath := "/etc/letsencrypt/live/yourdomain.com/fullchain.pem"
+		keyPath := "/etc/letsencrypt/live/yourdomain.com/privkey.pem"
 
-	if err != nil {
-		log.Fatal(err)
+		cert, err := tls.LoadX509KeyPair(certPath, keyPath)
+		if err != nil {
+			log.Fatalf("Failed to load SSL certificate: %v", err)
+		}
+
+		tlsConfig := &tls.Config{Certificates: []tls.Certificate{cert}}
+		server := &http.Server{
+			Addr:      ":" + port,
+			Handler:   nil,
+			TLSConfig: tlsConfig,
+		}
+
+		log.Printf("Starting HTTPS server on port %s", port)
+		err = server.ListenAndServeTLS("", "")
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		log.Printf("Starting HTTP server on port %s", port)
+		err := http.ListenAndServe(":"+port, nil)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
