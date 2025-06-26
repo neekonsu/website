@@ -180,8 +180,8 @@ func main() {
 
 	if protocol == "https" {
 		// Load SSL certificates
-		certPath := "/etc/letsencrypt/live/yourdomain.com/fullchain.pem"
-		keyPath := "/etc/letsencrypt/live/yourdomain.com/privkey.pem"
+		certPath := "/etc/letsencrypt/live/neekon.xyz/fullchain.pem"
+		keyPath := "/etc/letsencrypt/live/neekon.xyz/privkey.pem"
 
 		cert, err := tls.LoadX509KeyPair(certPath, keyPath)
 		if err != nil {
