@@ -178,4 +178,9 @@ a:hover {
         justify-content: center;
         gap: 1rem;
     }
+
+    .photo {
+        display: block;
+        height: 200px;
+    }
 }
