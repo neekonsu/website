@@ -30,6 +30,7 @@ h2 {
 ul {
     padding: 0;
     margin: 0;
+    margin-top: 0.3rem;
     line-height: 1.6rem;
     list-style: none;
     text-align: left;
@@ -116,13 +117,7 @@ a:hover {
 }
 
 @media (max-width: 600px) {
-    .container {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 1.7rem;
-    }
-
+    
     ul {
         display: flex;
         flex-direction: row;
@@ -136,7 +131,56 @@ a:hover {
         list-style: none;
         text-align: left;
     }
-
+    
+    
+    li {
+        width: fit-content;
+    }
+    
+    h1 {
+        font-size: 24px;
+        font-family: "utopia-std-display", serif;
+        font-weight: 400;
+        font-style: normal;
+        margin: 0;
+    }
+    
+    #heading-wrapper {
+        height: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    #mobile-cover {
+        width: auto;
+        height: 150px;
+        margin: 0;
+    }
+    
+    #coverphoto {
+        display: block;
+        width: 80px;
+        height: auto;
+    }
+    
+    #center {
+        width: 90%;
+        margin: 0 auto;
+    }
+    
+    #gallery {
+        width: fit-content;
+        margin: 0 auto;
+        padding-top: 0.2rem;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+    
     #biglinks {
         width: fit-content;
         display: flex;
@@ -150,31 +194,12 @@ a:hover {
         list-style: none;
         text-align: left;
     }
-
-    li {
-        width: fit-content;
-    }
-
-    #coverphoto {
-        display: block;
-        width: 80px;
-        height: auto;
-    }
-
-    #center {
-        width: 90%;
-        margin: 0 auto;
-    }
-
-    #gallery {
-        width: fit-content;
-        margin: 0 auto;
-        padding-top: 0.2rem;
+    
+    .container {
+        width: 100%;
         display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 1rem;
+        flex-direction: column;
+        gap: 1.7rem;
     }
 
     .photo {
@@ -190,26 +215,6 @@ a:hover {
         margin-top: 0;
         margin-bottom: 1rem;
     }
+    
 
-    #heading-wrapper {
-        height: auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-
-    #mobile-cover {
-        width: auto;
-        height: 150px;
-        margin: 0;
-    }
-
-    h1 {
-        font-size: 24px;
-        font-family: "utopia-std-display", serif;
-        font-weight: 400;
-        font-style: normal;
-        margin: 0;
-    }
 }
