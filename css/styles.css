@@ -115,11 +115,8 @@ a:hover {
     display: block;
     height: 160px;
 }
-.centertitle {
-    margin: 0.3rem auto;
-}
-
-.centerlist {
+#centercontent {
+    width: 50%;
     margin: 0 auto;
 }
 
@@ -138,7 +135,6 @@ a:hover {
         list-style: none;
         text-align: left;
     }
-    
     
     li {
         width: fit-content;
@@ -208,13 +204,13 @@ a:hover {
         flex-direction: column;
         gap: 1.7rem;
     }
-
+    
     .photo {
         display: block;
         height: auto;
         width: 300px;
     }
-
+    
     .paragraph {
         font-size: 1rem;
         line-height: 1.6;
@@ -223,5 +219,8 @@ a:hover {
         margin-bottom: 1rem;
     }
     
-
+    .collist {
+        flex-direction: column;
+    }
+    
 }
