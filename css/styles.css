@@ -115,6 +115,13 @@ a:hover {
     display: block;
     height: 160px;
 }
+.centertitle {
+    margin: 0.3rem auto;
+}
+
+.centerlist {
+    margin: 0 auto;
+}
 
 @media (max-width: 600px) {
     
