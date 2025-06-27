@@ -163,6 +163,29 @@ func imgHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func videoHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Only GET allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	path := "." + r.URL.Path
+	f, err := os.Open(path)
+	if err != nil {
+		http.Error(w, "File not found", http.StatusNotFound)
+		return
+	}
+	defer f.Close()
+
+	stat, err := f.Stat()
+	if err != nil || stat.IsDir() {
+		http.Error(w, "Invalid file", http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "video/mp4")
+	http.ServeContent(w, r, stat.Name(), stat.ModTime(), f)
+}
 
 func logMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -259,6 +282,7 @@ func main() {
 	mux.HandleFunc("/", pageHandler)
 	mux.HandleFunc("/css/", cssHandler)
 	mux.HandleFunc("/img/", imgHandler)
+	mux.HandleFunc("/videos/", videoHandler)
 	wrappedMux := logMiddleware(mux)
 
 	if protocol == "https" {
